@@ -12,20 +12,22 @@ from docs.structure import PAGES
 
 keras_dir = pathlib.Path(__file__).resolve().parents[1]
 
-TOOLBOX = 'Keras'
+TOOLBOX = "Keras"
 
-### Copied from .docs.autogen
+# Copied from .docs.autogen
+
+
 def clean_module_name(name):
-    if name.startswith('keras_applications'):
-        name = name.replace('keras_applications', 'keras.applications')
-    if name.startswith('keras_preprocessing'):
-        name = name.replace('keras_preprocessing', 'keras.preprocessing')
+    if name.startswith("keras_applications"):
+        name = name.replace("keras_applications", "keras.applications")
+    if name.startswith("keras_preprocessing"):
+        name = name.replace("keras_preprocessing", "keras.preprocessing")
     return name
-    
-    
-### Modified from .docs.autogen
+
+
+# Modified from .docs.autogen
 def get_function_signature(function, name):
-    wrapped = getattr(function, '_original_function', None)
+    wrapped = getattr(function, "_original_function", None)
     if wrapped is None:
         signature = inspect.getargspec(function)
     else:
@@ -37,112 +39,111 @@ def get_function_signature(function, name):
         args = args[:-len(defaults)]
     else:
         kwargs = []
-        
-        
+
     full_name = clean_module_name(function.__module__)
-    sections = re.split(r'([a-z]*).(?P<section>[a-z]+)', full_name)
-    sections = [i for i in sections if i] 
+    sections = re.split(r"([a-z]*).(?P<section>[a-z]+)", full_name)
+    sections = [i for i in sections if i]
 
     ports = []
-    
+
     ports.append({
-        'name': '',
-        'input': True,
-        'output': False,
-        'visible': True,
-        'editable': True, 
-        'code': []
+        "name": "",
+        "input": True,
+        "output": False,
+        "visible": True,
+        "editable": True,
+        "code": []
     })
-    
+
     i = 0
     for argument in args:
-        ports.append({ 
-         'name': str(argument),
-         'input': False,
-         'output': False,
-         'visible': True,
-         'editable': True,
-         #'default': '',
-         'code': [{
-          'language': TOOLBOX,
-          'argument': {
-           'kwarg': False,
-           'arg': i
+        ports.append({
+         "name": str(argument),  # Ignore PycodestyleBear (E121)
+         "input": False,
+         "output": False,
+         "visible": True,
+         "editable": True,
+         #'default': '',  # Ignore PycodestyleBear (E265)
+         "code": [{
+          "language": TOOLBOX,  # Ignore PycodestyleBear (E121)
+          "argument": {
+           "kwarg": False,  # Ignore PycodestyleBear (E121)
+           "arg": i
           }
          }]
         })
         i += 1
-        
+
     for argument, default in kwargs:
         if isinstance(default, str):
-            default = '\'' + default + '\''
+            default = "\'" + default + "\'"
         if isinstance(default, tuple):
             default = "(" + ", ".join(map(str, default)) + ")"
-        
+
         types = {
-          type(True): "boolean",
-          type(''): "string",
+          type(True): "boolean",  # Ignore PycodestyleBear (E121)
+          type(""): "string",
           type(1): "numeric",
           type(1.): "numeric",
           type(None): None
         }
         port = {
-         'name': str(argument),
-         'input': False,
-         'output': False,
-         'visible': False,
-         'editable': True,
-         'default': default,
-         'code': [{
-          'language': TOOLBOX,
-          'argument': {
-           'kwarg': True,
-           'arg': False
+         "name": str(argument),  # Ignore PycodestyleBear (E121)
+         "input": False,
+         "output": False,
+         "visible": False,
+         "editable": True,
+         "default": default,
+         "code": [{
+          "language": TOOLBOX,  # Ignore PycodestyleBear (E121)
+          "argument": {
+           "kwarg": True,  # Ignore PycodestyleBear (E121)
+           "arg": False
           }
          }]
         }
         if type(default) in types:
-            port['type'] = types[type(default)]
+            port["type"] = types[type(default)]
 
         ports.append(port)
 
     ports.append({
-        'name': '',
-        'input': False,
-        'output': True,
-        'visible': True,
-        'editable': True,
-        'code': []
+        "name": "",
+        "input": False,
+        "output": True,
+        "visible": True,
+        "editable": True,
+        "code": []
     })
-    
-    return { 
-     'name': name,
-     'category': sections[-1],
-     'toolbox': TOOLBOX,
-     'code': [{
-      'language': TOOLBOX,
-      'argument': {
-       'name': name,
-       'import': 'from keras.layers import %s' % name
+
+    return {
+     "name": name,  # Ignore PycodestyleBear (E121)
+     "category": sections[-1],
+     "toolbox": TOOLBOX,
+     "code": [{
+      "language": TOOLBOX,  # Ignore PycodestyleBear (E121)
+      "argument": {
+       "name": name,  # Ignore PycodestyleBear (E121)
+       "import": "from keras.layers import %s" % name
       }
      }],
-     'web_url': 'https://keras.io/layers/%s/%s' % (sections[-1], name),
-     'ports': ports
+     "web_url": "https://keras.io/layers/%s/%s" % (sections[-1], name),
+     "ports": ports
     }
 
-    
-### Copied from .docs.autogen
+
+# Copied from .docs.autogen
 def read_page_data(page_data, type):
-    assert type in ['classes', 'functions', 'methods']
+    assert type in ["classes", "functions", "methods"]
     data = page_data.get(type, [])
-    for module in page_data.get('all_module_{}'.format(type), []):
+    for module in page_data.get("all_module_{}".format(type), []):
         module_data = []
         for name in dir(module):
-            if name[0] == '_' or name in EXCLUDE:
+            if name[0] == "_" or name in EXCLUDE:
                 continue
             module_member = getattr(module, name)
-            if (inspect.isclass(module_member) and type == 'classes' or
-               inspect.isfunction(module_member) and type == 'functions'):
+            if (inspect.isclass(module_member) and type == "classes" or
+                    inspect.isfunction(module_member) and type == "functions"):
                 instance = module_member
                 if module.__name__ in instance.__module__:
                     if instance not in module_data:
@@ -152,7 +153,7 @@ def read_page_data(page_data, type):
     return data
 
 
-### Copied from .docs.autogen and modified
+# Copied from .docs.autogen and modified
 def get_class_signature(cls):
     try:
         class_signature = get_function_signature(cls.__init__, cls.__name__)
@@ -166,32 +167,36 @@ def get_class_signature(cls):
 
 
 def get_rainbow_color(index):
-    r = floor(sin(pi * index + 0 * pi / 3) * 63) + 128;
-    g = floor(sin(pi * index + 2 * pi / 3) * 63) + 128;
-    b = floor(sin(pi * index + 4 * pi / 3) * 63) + 128;
-    return '#%02x%02x%02x' % (r, g, b)
+    r = floor(sin(pi * index + 0 * pi / 3) * 63) + 128
+    g = floor(sin(pi * index + 2 * pi / 3) * 63) + 128
+    b = floor(sin(pi * index + 4 * pi / 3) * 63) + 128
+    return "#%02x%02x%02x" % (r, g, b)
+
 
 def insert_colours(sorted_nodes, colour_index, colour_spacing):
-    sorted_nodes['colour'] = get_rainbow_color(colour_index)
-    if 'categories' in sorted_nodes.keys() and sorted_nodes['categories']:
-        colour_spacing /= len(sorted_nodes['categories'])
-        for index, category in enumerate(sorted_nodes['categories']):
-            insert_colours(category, colour_index + index * colour_spacing, colour_spacing)
-            
-### Copied from .docs.autogen and modified
+    sorted_nodes["colour"] = get_rainbow_color(colour_index)
+    if "categories" in sorted_nodes.keys() and sorted_nodes["categories"]:
+        colour_spacing /= len(sorted_nodes["categories"])
+        for index, category in enumerate(sorted_nodes["categories"]):
+            insert_colours(category, colour_index + index *
+                           colour_spacing, colour_spacing)
+
+# Copied from .docs.autogen and modified
+
+
 def generate(sources_dir):
-    
-    if K.backend() != 'tensorflow':
-        raise RuntimeError('The documentation must be built '
-                           'with the TensorFlow backend because this '
-                           'is the only backend with docstrings.')
+
+    if K.backend() != "tensorflow":
+        raise RuntimeError("The documentation must be built "
+                           "with the TensorFlow backend because this "
+                           "is the only backend with docstrings.")
 
     categories = []
     for page_data in PAGES:
-        section = re.match(r'layers/(?P<name>[a-z]*).md',page_data['page'])
+        section = re.match(r"layers/(?P<name>[a-z]*).md", page_data["page"])
 
         if section:
-            classes = read_page_data(page_data, 'classes')
+            classes = read_page_data(page_data, "classes")
             nodes = []
             for element in classes:
                 if not isinstance(element, (list, tuple)):
@@ -199,18 +204,16 @@ def generate(sources_dir):
                 cls = element[0]
                 signature = get_class_signature(cls)
                 nodes.append(signature)
-                
-            categories.append({ 'name': section.group('name'), 'nodes': nodes })
-        
-    dictionary = { 'name': TOOLBOX, 'categories': categories } 
-    insert_colours(dictionary, 0.0, 1.0)        
 
-    with open('keras_nodes.json', 'w') as outfile:    
-        json.dump({'toolboxes': [dictionary]}, outfile, sort_keys=False, indent=2)
+            categories.append({"name": section.group("name"), "nodes": nodes})
 
-if __name__ == '__main__':
-    generate(os.path.join(str(keras_dir), 'docs', 'sources'))
-    
-    
- 
-    
+    dictionary = {"name": TOOLBOX, "categories": categories}
+    insert_colours(dictionary, 0.0, 1.0)
+
+    with open("keras_nodes.json", "w") as outfile:
+        json.dump({"toolboxes": [dictionary]},
+                  outfile, sort_keys=False, indent=2)
+
+
+if __name__ == "__main__":
+    generate(os.path.join(str(keras_dir), "docs", "sources"))
