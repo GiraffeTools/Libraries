@@ -23,7 +23,7 @@ RUN conda install -y traits
 
 RUN chmod +x /usr/local/miniconda/bin/* && conda clean --all -y
 RUN echo 'export PATH=/usr/local/miniconda/bin:$PATH' >> /etc/profile
-RUN pip install nipype>=1.1.8
+RUN pip install nipype>=1.2.0
 RUN apt-get update && apt-get install -y graphviz
 
 RUN mkdir /code

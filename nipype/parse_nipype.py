@@ -58,7 +58,7 @@ def insert_colours(sorted_nodes, colour_index, colour_spacing):
 
 
 interface_modules = ["utility", "io", "ants", "fsl", "afni", "spm",
-                     "freesurfer", "camino", "mrtrix", "mne", "slicer", "dipy"]
+                     "freesurfer", "camino", "mrtrix3", "mne", "slicer", "dipy"]
 interface_modules = ["interfaces." + m for m in interface_modules]
 
 algorithm_modules = ["confounds", "icc", "mesh", "metrics", "misc", "modelgen",
@@ -87,6 +87,6 @@ toolboxes = [{
     "categories": dictionary["categories"],
 }]
 
-with open("toolboxes.json", "w") as outfile:
+with open("nipype_nodes.json", "w") as outfile:
     # json.dump({'toolboxes': toolboxes}, outfile, sort_keys=False, indent=2)
     json.dump({"toolboxes": toolboxes}, outfile, separators=(",", ":"))
